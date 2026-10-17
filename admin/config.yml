@@ -1,4 +1,4 @@
-backend:
+\ackend:
   name: git-gateway
   branch: main
 
@@ -7,10 +7,16 @@ public_folder: "/images"
 
 collections:
   - name: "products"
+  - name: "products"
     label: "Products"
     folder: "products"
     create: true
+    slug: "{{slug}}"
     fields:
       - {label: "Product Name", name: "title", widget: "string"}
-      - {label: "Image", name: "image", widget: "image"}
+      - {label: "Category", name: "category", widget: "select", options: ["T-Shirts", "Caps", "Bags", "Accessories"]}
+      - {label: "Price (e.g. ₹599)", name: "price", widget: "string"}
+      - {label: "Main Image", name: "image", widget: "image"}
+      - {label: "Additional Gallery Images", name: "gallery", widget: "list", field: {widget: "image"}}
+      - {label: "Font Style", name: "font_style", widget: "select", options: ["Default", "Bold Serif", "Streetwear Graffiti", "Clean Minimalist"]}
       - {label: "Description", name: "body", widget: "markdown"}
