@@ -172,6 +172,31 @@
             transition: var(--transition);
         }
 
+        /* CATEGORY FILTER BAR */
+        .category-filter {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0 10px 0;
+            flex-wrap: wrap;
+            padding: 0 5%;
+        }
+        .filter-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--primary-black);
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            transition: var(--transition);
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary-black);
+            color: #fff;
+        }
+
         /* PAGE ROUTING / SECTIONS */
         .page {
             display: none;
@@ -294,7 +319,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 40px;
-            padding: 50px 5%;
+            padding: 30px 5% 50px 5%;
         }
 
         .product-card {
@@ -815,6 +840,15 @@
         <!-- 2. PRODUCTS PAGE -->
         <div id="page-products" class="page">
             <h2 class="section-title" style="margin-top: 40px;">ALL PRODUCTS</h2>
+            
+            <!-- Category Sub-Filters -->
+            <div class="category-filter" id="category-filters" style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                <button class="filter-btn active" onclick="app.filterCategory('All')" style="padding: 8px 20px; border-radius: 20px; border: 1px solid var(--primary-black); background: var(--primary-black); color: #fff; cursor: pointer; font-weight: 600;">All</button>
+                <button class="filter-btn" onclick="app.filterCategory('Caps')" style="padding: 8px 20px; border-radius: 20px; border: 1px solid var(--primary-black); background: transparent; cursor: pointer; font-weight: 600;">Caps</button>
+                <button class="filter-btn" onclick="app.filterCategory('T-Shirts')" style="padding: 8px 20px; border-radius: 20px; border: 1px solid var(--primary-black); background: transparent; cursor: pointer; font-weight: 600;">T-Shirts</button>
+                <button class="filter-btn" onclick="app.filterCategory('Bags')" style="padding: 8px 20px; border-radius: 20px; border: 1px solid var(--primary-black); background: transparent; cursor: pointer; font-weight: 600;">Bags</button>
+            </div>
+
             <div class="products-grid" id="products-page-grid">
                 <!-- Injected via JS -->
             </div>
@@ -1041,14 +1075,15 @@
         </svg>
     </a>
 
-    <!-- JAVASCRIPT APP LOGIC WITH CART & CHECKOUT -->
+    <!-- JAVASCRIPT APP LOGIC WITH CART, CATEGORIES, & CHECKOUT -->
     <script>
         const app = {
             products: [
-                { id: 1, name: "Custom Doodle T-Shirt", price: 599, priceStr: "₹599", desc: "A premium cotton t-shirt transformed into a wearable masterpiece.", img: "FUNKAURA Yellow Tshirt.jpeg" },
-                { id: 2, name: "Custom Doodle Cap", price: 399, priceStr: "₹399", desc: "Top off your outfit with our classic structured cap.", img: "FUNKAURA Cap.jpg" },
-                { id: 3, name: "Custom Doodle Bag", price: 799, priceStr: "₹799", desc: "Carry your essentials in a bag that isn't ordinary.", img: "FUNKAURA Spider Man.jpeg" }
+                { id: 1, name: "Custom Doodle T-Shirt", category: "T-Shirts", price: 599, priceStr: "₹599", desc: "A premium cotton t-shirt transformed into a wearable masterpiece.", img: "FUNKAURA Yellow Tshirt.jpeg" },
+                { id: 2, name: "Custom Doodle Cap", category: "Caps", price: 399, priceStr: "₹399", desc: "Top off your outfit with our classic structured cap.", img: "FUNKAURA Cap.jpg" },
+                { id: 3, name: "Custom Doodle Bag", category: "Bags", price: 799, priceStr: "₹799", desc: "Carry your essentials in a bag that isn't ordinary.", img: "FUNKAURA Spider Man.jpeg" }
             ],
+            currentCategory: 'All',
             currentProduct: null,
             cart: [],
             isLoggedIn: false,
@@ -1077,16 +1112,26 @@
                             const text = await fileData.text();
                             const titleMatch = text.match(/title:\s*["']?(.*?)["']?\r?\n/);
                             const imageMatch = text.match(/image:\s*["']?(.*?)["']?\r?\n/);
+                            const priceMatch = text.match(/price:\s*["']?(.*?)["']?\r?\n/);
+                            const catMatch = text.match(/category:\s*["']?(.*?)["']?\r?\n/);
+                            const fontMatch = text.match(/font_style:\s*["']?(.*?)["']?\r?\n/);
+
                             const bodyParts = text.split('---');
                             let desc = "A premium custom doodle product by FUNKAURA.";
                             if (bodyParts.length > 2) {
                                 desc = bodyParts.slice(2).join('---').trim() || desc;
                             }
+
+                            let rawPrice = priceMatch ? priceMatch[1] : "599";
+                            let numericPrice = parseInt(rawPrice.replace(/[^0-9]/g, '')) || 599;
+
                             liveProducts.push({
                                 id: idCounter++,
                                 name: titleMatch ? titleMatch[1] : 'FUNKAURA Item',
-                                price: 599,
-                                priceStr: "₹599",
+                                category: catMatch ? catMatch[1] : 'Accessories',
+                                price: numericPrice,
+                                priceStr: rawPrice.includes('₹') ? rawPrice : `₹${rawPrice}`,
+                                fontStyle: fontMatch ? fontMatch[1] : 'Default',
                                 desc: desc,
                                 img: imageMatch ? imageMatch[1] : ''
                             });
@@ -1100,17 +1145,28 @@
                 }
             },
 
+            filterCategory(cat) {
+                this.currentCategory = cat;
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.style.background = (btn.innerText.toLowerCase() === cat.toLowerCase()) ? 'var(--primary-black)' : 'transparent';
+                    btn.style.color = (btn.innerText.toLowerCase() === cat.toLowerCase()) ? '#fff' : 'var(--primary-black)';
+                });
+                this.renderProducts();
+            },
+
             renderProducts() {
                 const productsGrid = document.getElementById('products-page-grid');
                 if(!productsGrid) return;
 
-                productsGrid.innerHTML = this.products.map(p => `
+                let filtered = this.currentCategory === 'All' ? this.products : this.products.filter(p => p.category.toLowerCase() === this.currentCategory.toLowerCase());
+
+                productsGrid.innerHTML = filtered.map(p => `
                     <div class="product-card" onclick="app.openProduct(${p.id})">
                         <div class="product-img-container">
                             <img src="${p.img}" alt="${p.name}">
                         </div>
                         <div class="product-info">
-                            <h3>${p.name}</h3>
+                            <h3 style="${p.fontStyle === 'Bold Serif' ? 'font-family: Georgia, serif;' : p.fontStyle === 'Streetwear Graffiti' ? 'font-style: italic; letter-spacing: 2px;' : ''}">${p.name}</h3>
                             <div class="product-price">${p.priceStr}</div>
                             <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
                                 <button class="btn" style="padding: 6px 12px; font-size: 0.75rem;" onclick="event.stopPropagation(); app.openProduct(${p.id})">VIEW</button>
@@ -1183,7 +1239,6 @@
                     alert("Please log in or register first to place an order online!");
                     this.navigate('login');
                 } else {
-                    // Populate hidden cart data for email
                     const summary = this.cart.map(i => `${i.name} (${i.priceStr})`).join(', ');
                     document.getElementById('co-cart-data').value = summary;
                     this.navigate('checkout');
@@ -1253,7 +1308,6 @@
             },
 
             submitOrder(e) {
-                // Formspree will automatically email you when submitted
                 alert("Order placed successfully! We have sent a confirmation email to the store.");
                 this.cart = [];
                 this.updateCartUI();
