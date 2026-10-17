@@ -83,7 +83,6 @@
             color: #fff;
         }
 
-        /* NEW BUTTON CLASS FOR CONTACT PAGE VISIBILITY */
         .btn-dark-text {
             color: var(--primary-black) !important;
             border-color: var(--primary-black) !important;
@@ -167,14 +166,14 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* HOME HERO - UPDATED FOR LOGO */
+        /* HOME HERO */
         .hero {
             display: flex;
             align-items: center;
             justify-content: space-between;
             height: 90vh;
             padding: 0 5%;
-            background: var(--primary-black); /* Black background to blend logo */
+            background: var(--primary-black);
             color: #ffffff;
         }
 
@@ -187,7 +186,7 @@
             font-size: 4rem;
             line-height: 1.1;
             margin-bottom: 15px;
-            color: #ffffff; /* White text for contrast */
+            color: #ffffff;
         }
 
         .hero-content p {
@@ -202,7 +201,6 @@
             gap: 15px;
         }
 
-        /* Hero buttons adjusted for dark background */
         .hero .btn {
             border-color: #ffffff;
             color: #ffffff;
@@ -229,7 +227,7 @@
         .hero-visual img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Changed to contain so logo isn't cropped */
+            object-fit: contain;
         }
 
         /* SCROLL ANIMATIONS */
@@ -291,7 +289,6 @@
             box-shadow: 0 15px 30px rgba(0,0,0,0.1);
         }
 
-        /* --- FIXED IMAGE CONTAINER --- */
         .product-img-container {
             width: 100%;
             height: 350px;
@@ -307,7 +304,7 @@
         .product-img-container img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* FIXED: Prevents cutting off the image */
+            object-fit: contain;
             transition: transform 0.5s ease;
         }
 
@@ -318,7 +315,7 @@
         .product-info h3 {
             font-size: 1.2rem;
             margin-bottom: 10px;
-            text-transform: none; /* Stops the forced ALL CAPS */
+            text-transform: none;
         }
 
         .product-price {
@@ -395,7 +392,6 @@
             margin: 0 auto;
         }
         
-        /* --- FIXED DETAIL IMAGE CONTAINER --- */
         .detail-img {
             flex: 1;
             border-radius: 20px;
@@ -408,7 +404,7 @@
         .detail-img img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* FIXED: Prevents cutting off on the detail page */
+            object-fit: contain;
         }
         
         .detail-info {
@@ -422,10 +418,10 @@
         .detail-info p { margin-bottom: 30px; color: var(--dark-grey); }
         .detail-actions { display: flex; gap: 15px; flex-wrap: wrap;}
 
-        /* CUSTOMIZATION FORM */
+        /* FORMS (CUSTOMIZATION, LOGIN, REGISTER) */
         .custom-form-container {
             max-width: 600px;
-            margin: 50px auto;
+            margin: 0 auto 50px;
             padding: 40px;
             background: var(--off-white);
             border-radius: 20px;
@@ -454,7 +450,7 @@
             border-color: var(--primary-black);
         }
         
-        /* FOOTER / CONTACT */
+        /* FOOTER */
         footer {
             background: var(--primary-black);
             color: #ffffff;
@@ -469,29 +465,82 @@
             margin-bottom: 15px;
         }
 
-        /* NEW FOOTER QUICK LINKS LAYOUT */
+        /* FOOTER QUICK LINKS */
         .quick-links-container {
             max-width: 800px;
             margin: 0 auto 50px auto;
             text-align: left;
             border-top: 1px solid #333;
-            border-bottom: 1px solid #333;
-            padding: 40px 20px;
+            padding: 40px 20px 0 20px;
         }
         .quick-links-container h3 {
             color: #fff;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             font-size: 1.5rem;
             letter-spacing: 2px;
         }
-        .quick-links-container p {
+        
+        .quick-link-item {
+            border-bottom: 1px solid #333;
+            padding: 15px 0;
+            display: block;
+        }
+        .quick-link-item summary, .quick-link-item a.link-header {
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 1px;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+        .quick-link-item summary::-webkit-details-marker {
+            display: none;
+        }
+        .quick-link-item summary::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: var(--medium-grey);
+            font-weight: 300;
+        }
+        .quick-link-item[open] summary::after {
+            content: '-';
+        }
+        .quick-link-item a.link-header::after {
+            content: '→';
+            font-size: 1.5rem;
+            color: var(--medium-grey);
+            font-weight: 300;
+            transition: transform 0.3s ease;
+        }
+        .quick-link-item a.link-header:hover::after {
+            transform: translateX(5px);
+        }
+        
+        .dropdown-content {
+            padding-top: 20px;
+            padding-bottom: 10px;
+        }
+        .dropdown-content p {
             color: #aaa;
             line-height: 1.8;
             margin-bottom: 15px;
             font-size: 0.95rem;
         }
-        .quick-links-container p strong {
+        .dropdown-content p strong {
             color: #fff;
+        }
+        .dropdown-content a {
+            color: #fff;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+        .dropdown-content a:hover {
+            color: var(--medium-grey);
         }
 
         .footer-bottom {
@@ -572,7 +621,6 @@
             .product-detail-wrapper { flex-direction: column; }
             
             .products-grid { grid-template-columns: 1fr; }
-            .quick-links-container { text-align: center; }
         }
     </style>
 </head>
@@ -612,11 +660,6 @@
                         <button class="btn" onclick="app.navigate('customization')">Customize Style</button>
                     </div>
                 </div>
-                <!-- 
-                ================================================= 
-                IMAGE LOCATION #1: Main Hero Section 
-                ================================================= 
-                -->
                 <div class="hero-visual">
                     <img src="FUNKAURA Logo.jpeg" alt="FUNKAURA Official Logo">
                 </div>
@@ -753,9 +796,67 @@
             </section>
         </div>
 
+        <!-- 7. LOGIN PAGE -->
+        <div id="page-login" class="page">
+            <h2 class="section-title" style="margin-top: 40px;">LOGIN TO FUNKAURA</h2>
+            <div class="custom-form-container reveal">
+                <form id="login-form" onsubmit="app.submitLogin(event)">
+                    <div class="form-group">
+                        <label for="l-email">Email Address</label>
+                        <input type="email" id="l-email" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="l-password">Password</label>
+                        <input type="password" id="l-password" required placeholder="Enter your password">
+                    </div>
+                    <button type="submit" class="btn btn-solid" style="width: 100%;">SIGN IN</button>
+                    
+                    <p style="text-align: center; margin-top: 25px; color: var(--dark-grey); font-size: 0.9rem;">
+                        Don't have an account? <br>
+                        <a href="#" onclick="app.navigate('register')" style="color: var(--primary-black); font-weight: bold; text-decoration: underline; margin-top: 5px; display: inline-block;">Register here</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <!-- 8. REGISTER PAGE -->
+        <div id="page-register" class="page">
+            <h2 class="section-title" style="margin-top: 40px;">CREATE AN ACCOUNT</h2>
+            <div class="custom-form-container reveal">
+                <form id="register-form" onsubmit="app.submitRegister(event)">
+                    <div class="form-group">
+                        <label for="r-name">Full Name</label>
+                        <input type="text" id="r-name" required placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="r-phone">Phone Number</label>
+                        <input type="tel" id="r-phone" required placeholder="Enter your phone number">
+                    </div>
+                    <div class="form-group">
+                        <label for="r-email">Email Address</label>
+                        <input type="email" id="r-email" required placeholder="Enter your email address">
+                    </div>
+                    <div class="form-group">
+                        <label for="r-password">Password</label>
+                        <input type="password" id="r-password" required placeholder="Create a password">
+                    </div>
+                    <div class="form-group">
+                        <label for="r-confirm-password">Confirm Password</label>
+                        <input type="password" id="r-confirm-password" required placeholder="Confirm your password">
+                    </div>
+                    <button type="submit" class="btn btn-solid" style="width: 100%;">CREATE ACCOUNT</button>
+                    
+                    <p style="text-align: center; margin-top: 25px; color: var(--dark-grey); font-size: 0.9rem;">
+                        Already have an account? <br>
+                        <a href="#" onclick="app.navigate('login')" style="color: var(--primary-black); font-weight: bold; text-decoration: underline; margin-top: 5px; display: inline-block;">Login here</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+
     </main>
 
-    <!-- FOOTER WITH NEW QUICK LINKS -->
+    <!-- FOOTER WITH 4 QUICK LINKS -->
     <footer>
         <div class="footer-brand">
             <img src="FUNKAURA Logo.jpeg" alt="FUNKAURA Logo">
@@ -765,14 +866,43 @@
         
         <div class="quick-links-container">
             <h3>QUICK LINKS</h3>
-            <p><strong>About Us</strong><br>
-            <strong>About FUNKAURA</strong><br>
-            <strong>DON’T WEAR ORDINARY.</strong></p>
-            <p>At FUNKAURA, we believe fashion is more than just what you wear — it’s a way to express who you are.</p>
-            <p>We are a creative clothing brand built around individuality, artistic expression, and streetwear culture. From unique doodle-designed T-shirts and caps to customized bags and other accessories, we bring creativity into everyday fashion.</p>
-            <p>Our goal is simple: to make ordinary products feel extraordinary. Whether you choose a design from our collection or bring your own idea to life, FUNKAURA gives you the freedom to wear your personality with confidence.</p>
-            <p>We focus on creative designs, distinctive styles, and making self-expression accessible to everyone. Every piece represents our belief that fashion should be personal, original, and anything but ordinary.</p>
-            <p><strong>FUNKAURA — Made for the Different. Designed to Stand Out.</strong></p>
+            
+            <!-- Link 1: About Us (Accordion) -->
+            <details class="quick-link-item">
+                <summary>About Us</summary>
+                <div class="dropdown-content">
+                    <p><strong>About FUNKAURA</strong><br>
+                    <strong>DON’T WEAR ORDINARY.</strong></p>
+                    <p>At FUNKAURA, we believe fashion is more than just what you wear — it’s a way to express who you are.</p>
+                    <p>We are a creative clothing brand built around individuality, artistic expression, and streetwear culture. From unique doodle-designed T-shirts and caps to customized bags and other accessories, we bring creativity into everyday fashion.</p>
+                    <p>Our goal is simple: to make ordinary products feel extraordinary. Whether you choose a design from our collection or bring your own idea to life, FUNKAURA gives you the freedom to wear your personality with confidence.</p>
+                    <p>We focus on creative designs, distinctive styles, and making self-expression accessible to everyone. Every piece represents our belief that fashion should be personal, original, and anything but ordinary.</p>
+                    <p><strong>FUNKAURA — Made for the Different. Designed to Stand Out.</strong></p>
+                </div>
+            </details>
+
+            <!-- Link 2: Contact Us (Accordion) -->
+            <details class="quick-link-item">
+                <summary>Contact Us</summary>
+                <div class="dropdown-content">
+                    <p>Reach us through any of the channels below.</p>
+                    <p><strong>Phone:</strong> 9978653371</p>
+                    <p><strong>Email:</strong> <a href="mailto:mohammedbharmal2006@gmail.com">mohammedbharmal2006@gmail.com</a></p>
+                    <p><strong>Instagram:</strong> <a href="https://instagram.com/funka.ura" target="_blank">@funka.ura</a></p>
+                    <p><strong>WhatsApp:</strong> <a href="https://wa.me/919978653371?text=Hi%20FUNKAURA,%20I'm%20reaching%20out%20from%20your%20website!" target="_blank">Message us directly</a></p>
+                </div>
+            </details>
+
+            <!-- Link 3: Login (Page Link) -->
+            <div class="quick-link-item">
+                <a href="#" onclick="app.navigate('login'); return false;" class="link-header">Login</a>
+            </div>
+
+            <!-- Link 4: Register (Page Link) -->
+            <div class="quick-link-item">
+                <a href="#" onclick="app.navigate('register'); return false;" class="link-header">Register</a>
+            </div>
+
         </div>
 
         <div class="footer-bottom">
@@ -791,7 +921,6 @@
     <script>
         const app = {
             // FALLBACK PRODUCTS DATA
-            // Used temporarily while GitHub data loads, or if the connection fails.
             products: [
                 {
                     id: 1,
@@ -820,15 +949,10 @@
 
             // INITIALIZATION
             async init() {
-                // Wait for the fresh products to fetch from GitHub first
                 await this.fetchLiveProducts(); 
-                
-                // Then draw the page exactly like normal
                 this.renderProducts();
                 this.setupScrollObserver();
                 this.setupNavbarScroll();
-                
-                // Ensure home is visible on load
                 this.navigate('home');
             },
 
@@ -837,8 +961,6 @@
                 try {
                     const repoUrl = 'https://api.github.com/repos/mohammedbharmal2006/funkaura-website/contents/products';
                     const response = await fetch(repoUrl);
-                    
-                    // If the folder isn't found or there is an error, just use the fallback data above
                     if (!response.ok) return; 
                     
                     const files = await response.json();
@@ -846,16 +968,13 @@
                     let idCounter = 1;
 
                     for (let file of files) {
-                        // Only read the Markdown files created by your admin dashboard
                         if (file.name.endsWith('.md')) {
                             const fileData = await fetch(file.download_url);
                             const text = await fileData.text();
 
-                            // Read Title and Image
                             const titleMatch = text.match(/title:\s*["']?(.*?)["']?\r?\n/);
                             const imageMatch = text.match(/image:\s*["']?(.*?)["']?\r?\n/);
                             
-                            // Read Description (text located after the second "---" in Netlify files)
                             const bodyParts = text.split('---');
                             let desc = "A premium custom doodle product by FUNKAURA.";
                             if (bodyParts.length > 2) {
@@ -865,14 +984,12 @@
                             liveProducts.push({
                                 id: idCounter++,
                                 name: titleMatch ? titleMatch[1] : 'FUNKAURA Item',
-                                price: "Custom Order", // Using placeholder since price isn't in CMS yet
+                                price: "Custom Order", 
                                 desc: desc,
                                 img: imageMatch ? imageMatch[1] : ''
                             });
                         }
                     }
-
-                    // If we successfully found and downloaded products, replace the hardcoded ones!
                     if (liveProducts.length > 0) {
                         this.products = liveProducts;
                     }
@@ -884,7 +1001,6 @@
             // RENDER PRODUCTS
             renderProducts() {
                 const productsGrid = document.getElementById('products-page-grid');
-                
                 if(!productsGrid) return;
 
                 const generateCards = () => {
@@ -911,19 +1027,16 @@
 
             // PAGE NAVIGATION
             navigate(pageId) {
-                // Hide all pages
                 document.querySelectorAll('.page').forEach(page => {
                     page.classList.remove('active');
                 });
                 
-                // Show requested page
                 const targetPage = document.getElementById('page-' + pageId);
                 if(targetPage) {
                     targetPage.classList.add('active');
                     window.scrollTo(0, 0);
                 }
 
-                // Close mobile menu if open
                 const navLinks = document.getElementById('nav-links');
                 if (navLinks && navLinks.classList.contains('active')) {
                     this.toggleMobileMenu();
@@ -936,7 +1049,6 @@
                 if(!product) return;
 
                 this.currentProduct = product;
-                
                 document.getElementById('detail-image').src = product.img;
                 document.getElementById('detail-title').innerText = product.name;
                 document.getElementById('detail-price').innerText = product.price;
@@ -967,8 +1079,29 @@
                 
                 const number = "919978653371";
                 const url = `https://wa.me/${number}?text=${message}`;
-                
                 window.open(url, '_blank');
+            },
+
+            // SUBMIT LOGIN FORM
+            submitLogin(e) {
+                e.preventDefault();
+                alert("Login successful! Welcome back to FUNKAURA.");
+                this.navigate('home');
+            },
+
+            // SUBMIT REGISTER FORM
+            submitRegister(e) {
+                e.preventDefault();
+                const pass = document.getElementById('r-password').value;
+                const confirm = document.getElementById('r-confirm-password').value;
+                
+                if (pass !== confirm) {
+                    alert("Passwords do not match. Please try again.");
+                    return;
+                }
+                
+                alert("Account created successfully! Welcome to FUNKAURA.");
+                this.navigate('home');
             },
 
             // MOBILE MENU TOGGLE
