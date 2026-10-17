@@ -761,7 +761,8 @@
     <!-- JAVASCRIPT APP LOGIC -->
     <script>
         const app = {
-            // PRODUCTS DATA
+            // FALLBACK PRODUCTS DATA
+            // Used temporarily while GitHub data loads, or if the connection fails.
             products: [
                 {
                     id: 1,
@@ -789,12 +790,66 @@
             currentProduct: null,
 
             // INITIALIZATION
-            init() {
+            async init() {
+                // Wait for the fresh products to fetch from GitHub first
+                await this.fetchLiveProducts(); 
+                
+                // Then draw the page exactly like normal
                 this.renderProducts();
                 this.setupScrollObserver();
                 this.setupNavbarScroll();
+                
                 // Ensure home is visible on load
                 this.navigate('home');
+            },
+
+            // NEW GITHUB FETCH LOGIC
+            async fetchLiveProducts() {
+                try {
+                    const repoUrl = 'https://api.github.com/repos/mohammedbharmal2006/funkaura-website/contents/products';
+                    const response = await fetch(repoUrl);
+                    
+                    // If the folder isn't found or there is an error, just use the fallback data above
+                    if (!response.ok) return; 
+                    
+                    const files = await response.json();
+                    let liveProducts = [];
+                    let idCounter = 1;
+
+                    for (let file of files) {
+                        // Only read the Markdown files created by your admin dashboard
+                        if (file.name.endsWith('.md')) {
+                            const fileData = await fetch(file.download_url);
+                            const text = await fileData.text();
+
+                            // Read Title and Image
+                            const titleMatch = text.match(/title:\s*["']?(.*?)["']?\r?\n/);
+                            const imageMatch = text.match(/image:\s*["']?(.*?)["']?\r?\n/);
+                            
+                            // Read Description (text located after the second "---" in Netlify files)
+                            const bodyParts = text.split('---');
+                            let desc = "A premium custom doodle product by FUNKAURA.";
+                            if (bodyParts.length > 2) {
+                                desc = bodyParts.slice(2).join('---').trim() || desc;
+                            }
+
+                            liveProducts.push({
+                                id: idCounter++,
+                                name: titleMatch ? titleMatch[1] : 'FUNKAURA Item',
+                                price: "Custom Order", // Using placeholder since price isn't in CMS yet
+                                desc: desc,
+                                img: imageMatch ? imageMatch[1] : ''
+                            });
+                        }
+                    }
+
+                    // If we successfully found and downloaded products, replace the hardcoded ones!
+                    if (liveProducts.length > 0) {
+                        this.products = liveProducts;
+                    }
+                } catch (error) {
+                    console.error("Using fallback product list. GitHub fetch error:", error);
+                }
             },
 
             // RENDER PRODUCTS
