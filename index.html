@@ -306,6 +306,7 @@
         .product-info h3 {
             font-size: 1.2rem;
             margin-bottom: 10px;
+            text-transform: none; /* Stops the forced ALL CAPS */
         }
 
         .product-price {
@@ -603,17 +604,6 @@
                 <p>At FUNKAURA, we believe your clothing should speak for you. We transform standard apparel into striking, personalized doodle-art canvases. Stand out, be bold, and wear your unique aura.</p>
             </section>
 
-            <!-- Featured Products -->
-            <section class="reveal">
-                <h2 class="section-title">FEATURED PRODUCTS</h2>
-                <div class="products-grid" id="home-featured-grid">
-                    <!-- Injected via JS -->
-                </div>
-                <div style="text-align: center; margin-top: 20px;">
-                    <button class="btn" onclick="app.navigate('products')">VIEW ALL PRODUCTS</button>
-                </div>
-            </section>
-
             <!-- Why Funkaura -->
             <section class="why-section reveal">
                 <h2>WHY FUNKAURA</h2>
@@ -864,10 +854,9 @@
 
             // RENDER PRODUCTS
             renderProducts() {
-                const homeGrid = document.getElementById('home-featured-grid');
                 const productsGrid = document.getElementById('products-page-grid');
                 
-                if(!homeGrid || !productsGrid) return;
+                if(!productsGrid) return;
 
                 const generateCards = () => {
                     return this.products.map(p => `
@@ -888,7 +877,6 @@
                 };
 
                 const cardsHtml = generateCards();
-                homeGrid.innerHTML = cardsHtml;
                 productsGrid.innerHTML = cardsHtml;
             },
 
