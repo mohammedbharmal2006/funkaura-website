@@ -1,11 +1,431 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FUNKAURA Admin Panel</title>
-  </head>
-  <body>
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  </body>
+<html lang="en">
+<head>
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FUNKAURA | DON'T WEAR ORDINARY</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --primary-black: #0a0a0a;
+            --charcoal: #1a1a1a;
+            --dark-grey: #333333;
+            --medium-grey: #777777;
+            --light-grey: #f0f0f0;
+            --off-white: #fafafa;
+            --transition: all 0.3s ease;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); }
+        body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; overflow-x: hidden; scroll-behavior: smooth; }
+
+        h1, h2, h3, h4 { text-transform: uppercase; font-weight: 800; letter-spacing: 1px; color: var(--primary-black); }
+        .slogan { font-weight: 300; letter-spacing: 3px; color: var(--medium-grey); text-transform: uppercase; font-size: 1rem; }
+
+        .btn {
+            display: inline-block; padding: 12px 28px; border-radius: 50px; text-decoration: none;
+            font-weight: 600; text-transform: uppercase; font-size: 0.9rem; cursor: pointer;
+            transition: var(--transition); border: 2px solid var(--primary-black); background: transparent; color: var(--primary-black); text-align: center;
+        }
+        .btn-solid { background: var(--primary-black); color: #ffffff; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .btn-solid:hover { background: var(--charcoal); color: #fff; }
+
+        nav {
+            position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 5%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); z-index: 1000; box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+        }
+        .logo { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; cursor: pointer; }
+        .nav-links { display: flex; gap: 30px; list-style: none; align-items: center; }
+        .nav-links li a { text-decoration: none; color: var(--primary-black); font-size: 0.9rem; font-weight: 600; }
+        
+        .cart-icon-btn { background: none; border: none; font-size: 1.1rem; font-weight: 700; cursor: pointer; text-transform: uppercase; color: var(--primary-black); }
+        .cart-badge { position: absolute; top: -8px; right: -12px; background: var(--primary-black); color: #fff; font-size: 0.7rem; padding: 2px 6px; border-radius: 50%; }
+
+        .category-filter { display: flex; justify-content: center; gap: 15px; margin: 30px 0 10px 0; flex-wrap: wrap; padding: 0 5%; }
+        .filter-btn {
+            padding: 8px 20px; border-radius: 20px; border: 1px solid var(--primary-black); background: transparent;
+            cursor: pointer; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; transition: var(--transition);
+        }
+        .filter-btn.active, .filter-btn:hover { background: var(--primary-black); color: #fff; }
+
+        .page { display: none; padding-top: 80px; min-height: 100vh; }
+        .page.active { display: block; }
+
+        .hero { display: flex; align-items: center; justify-content: space-between; height: 90vh; padding: 0 5%; background: var(--primary-black); color: #ffffff; }
+        .hero-content { flex: 1; padding-right: 20px; }
+        .hero-content h1 { font-size: 4rem; line-height: 1.1; margin-bottom: 15px; color: #ffffff; }
+        .hero-visual { flex: 1; height: 80%; display: flex; align-items: center; justify-content: center; }
+        .hero-visual img { width: 100%; height: 100%; object-fit: contain; }
+
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; padding: 30px 5% 50px 5%; }
+        .product-card { background: var(--off-white); border-radius: 15px; padding: 20px; transition: var(--transition); text-align: center; cursor: pointer; border: 1px solid var(--light-grey); }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .product-img-container { width: 100%; height: 350px; border-radius: 10px; overflow: hidden; margin-bottom: 20px; background: var(--light-grey); display: flex; align-items: center; justify-content: center; }
+        .product-img-container img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.5s ease; }
+        
+        .product-info h3 { font-size: 1.2rem; margin-bottom: 10px; text-transform: none; }
+        .product-price { font-weight: 700; color: var(--dark-grey); margin-bottom: 15px; }
+
+        .product-detail-wrapper { display: flex; gap: 50px; padding: 50px 5%; max-width: 1200px; margin: 0 auto; }
+        .detail-img { flex: 1; border-radius: 20px; overflow: hidden; background: var(--light-grey); display: flex; align-items: center; justify-content: center; }
+        .detail-img img { width: 100%; height: 100%; object-fit: contain; }
+        .detail-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+        .custom-form-container { max-width: 600px; margin: 0 auto 50px; padding: 40px; background: var(--off-white); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--light-grey); border-radius: 8px; font-size: 1rem; background: #fff; }
+
+        .cart-drawer { position: fixed; top: 0; right: -400px; width: 380px; height: 100%; background: #ffffff; box-shadow: -5px 0 25px rgba(0,0,0,0.1); z-index: 2000; transition: right 0.3s ease; display: flex; flex-direction: column; padding: 30px; }
+        .cart-drawer.open { right: 0; }
+        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1500; display: none; }
+        .cart-overlay.open { display: block; }
+
+        footer { background: var(--primary-black); color: #ffffff; padding: 60px 5% 30px; text-align: center; }
+        .footer-brand img { max-width: 130px; margin-bottom: 15px; }
+        .footer-bottom { color: var(--medium-grey); font-size: 0.8rem; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <nav id="navbar">
+        <div class="logo" onclick="app.navigate('home')">FUNKAURA</div>
+        <ul class="nav-links">
+            <li><a href="#" onclick="app.navigate('home')">HOME</a></li>
+            <li><a href="#" onclick="app.navigate('products')">PRODUCTS</a></li>
+            <li><a href="#" onclick="app.navigate('customization')">CUSTOMIZATION</a></li>
+            <li><a href="#" onclick="app.navigate('about')">ABOUT</a></li>
+            <li><a href="#" onclick="app.navigate('contact')">CONTACT</a></li>
+            <li><button class="cart-icon-btn" onclick="app.toggleCart()" style="position:relative;background:none;border:none;cursor:pointer;">Cart <span class="cart-badge" id="cart-count">0</span></button></li>
+        </ul>
+    </nav>
+
+    <div class="cart-overlay" id="cart-overlay" onclick="app.toggleCart()"></div>
+    <div class="cart-drawer" id="cart-drawer">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--light-grey); padding-bottom: 15px; margin-bottom: 20px;">
+            <h3>Your Cart</h3>
+            <button onclick="app.toggleCart()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">×</button>
+        </div>
+        <div id="cart-items-container" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;">
+            <p style="text-align: center; color: var(--medium-grey);">Your cart is empty.</p>
+        </div>
+        <div style="border-top: 1px solid var(--light-grey); padding-top: 20px; margin-top: 20px;">
+            <div style="display: flex; justify-content: space-between; font-weight: 800; margin-bottom: 20px;">
+                <span>Total:</span><span id="cart-total-price">₹0</span>
+            </div>
+            <button class="btn btn-solid" style="width: 100%;" onclick="app.proceedToCheckout()">PROCEED TO CHECKOUT</button>
+        </div>
+    </div>
+
+    <main id="app-content">
+        <div id="page-home" class="page active">
+            <section class="hero">
+                <div class="hero-content">
+                    <p class="slogan" style="color: #aaa;">Funkaura</p>
+                    <h1>DON'T WEAR ORDINARY</h1>
+                    <p>Turn everyday fashion into personalized artwork through bold custom doodles.</p>
+                    <button class="btn btn-solid" onclick="app.navigate('products')">Explore Products</button>
+                </div>
+                <div class="hero-visual"><img src="FUNKAURA Logo.jpeg" alt="Logo"></div>
+            </section>
+        </div>
+
+        <div id="page-products" class="page">
+            <h2 class="section-title" style="margin-top: 40px; text-align: center;">ALL PRODUCTS</h2>
+            <div class="category-filter">
+                <button class="filter-btn active" onclick="app.filterCategory('All')">All</button>
+                <button class="filter-btn" onclick="app.filterCategory('Caps')">Caps</button>
+                <button class="filter-btn" onclick="app.filterCategory('T-Shirts')">T-Shirts</button>
+                <button class="filter-btn" onclick="app.filterCategory('Bags')">Bags</button>
+                <button class="filter-btn" onclick="app.filterCategory('Accessories')">Accessories</button>
+            </div>
+            <div class="products-grid" id="products-page-grid"></div>
+        </div>
+
+        <div id="page-product-detail" class="page">
+            <div class="product-detail-wrapper">
+                <div class="detail-img"><img id="detail-image" src="" alt="Product"></div>
+                <div class="detail-info">
+                    <button class="btn" style="width: max-content; padding: 5px 15px; margin-bottom: 20px; font-size: 0.8rem;" onclick="app.navigate('products')">← BACK</button>
+                    <h2 id="detail-title">Title</h2>
+                    <div class="price" id="detail-price" style="font-size: 1.4rem; margin: 15px 0;">₹0</div>
+                    <p id="detail-desc" style="margin-bottom: 25px; color: var(--dark-grey);"></p>
+                    <div style="display: flex; gap: 15px;">
+                        <button class="btn btn-solid" onclick="app.addToCartCurrent()">ADD TO CART</button>
+                        <button class="btn" style="background: #25d366; color: white; border-color: #25d366;" onclick="app.buyNowWhatsApp()">WHATSAPP ORDER</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-customization" class="page">
+            <h2 class="section-title" style="margin-top: 40px; text-align: center;">CUSTOMIZE YOUR STYLE</h2>
+            <div class="custom-form-container">
+                <form onsubmit="app.submitCustomization(event)">
+                    <div class="form-group"><label>Name</label><input type="text" id="c-name" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="c-email" required></div>
+                    <div class="form-group"><label>WhatsApp Number</label><input type="tel" id="c-whatsapp" required></div>
+                    <div class="form-group"><label>Product</label>
+                        <select id="c-product" required>
+                            <option value="T-Shirt">T-Shirt</option><option value="Cap">Cap</option><option value="Bag">Bag</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Description</label><textarea id="c-desc" rows="4" required></textarea></div>
+                    <button type="submit" class="btn btn-solid" style="width: 100%;">SEND REQUEST</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="page-about" class="page">
+            <div class="brand-intro" style="padding: 60px 5%; text-align: center;">
+                <h2>About FUNKAURA</h2>
+                <p style="max-width: 600px; margin: 20px auto; color: var(--medium-grey);">DON'T WEAR ORDINARY. Independent creative clothing brand built around individuality, artistic expression, and streetwear culture.</p>
+            </div>
+        </div>
+
+        <div id="page-contact" class="page">
+            <div class="custom-form-container" style="text-align: center; margin-top: 50px;">
+                <h2>Contact Us</h2>
+                <p style="margin: 20px 0;">Phone: 9978653371<br>Email: mohammedbharmal2006@gmail.com</p>
+                <a href="https://instagram.com/funka.ura" target="_blank" class="btn btn-solid">Instagram @funka.ura</a>
+            </div>
+        </div>
+
+        <div id="page-login" class="page">
+            <h2 class="section-title" style="margin-top: 40px; text-align: center;">LOGIN</h2>
+            <div class="custom-form-container">
+                <form onsubmit="app.submitLogin(event)">
+                    <div class="form-group"><label>Email</label><input type="email" id="l-email" required></div>
+                    <div class="form-group"><label>Password</label><input type="password" id="l-password" required></div>
+                    <button type="submit" class="btn btn-solid" style="width: 100%;">LOGIN</button>
+                    <p style="text-align:center; margin-top:15px;"><a href="#" onclick="app.navigate('register')">Create an account</a></p>
+                </form>
+            </div>
+        </div>
+
+        <div id="page-register" class="page">
+            <h2 class="section-title" style="margin-top: 40px; text-align: center;">REGISTER</h2>
+            <div class="custom-form-container">
+                <form onsubmit="app.submitRegister(event)">
+                    <div class="form-group"><label>Name</label><input type="text" id="r-name" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="r-email" required></div>
+                    <div class="form-group"><label>Password</label><input type="password" id="r-password" required></div>
+                    <button type="submit" class="btn btn-solid" style="width: 100%;">REGISTER</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="page-checkout" class="page">
+            <h2 class="section-title" style="margin-top: 40px; text-align: center;">CHECKOUT</h2>
+            <div class="custom-form-container">
+                <form action="https://formspree.io/f/mohammedbharmal2006@gmail.com" method="POST" onsubmit="app.submitOrder(event)">
+                    <div class="form-group"><label>Full Name</label><input type="text" name="Name" required></div>
+                    <div class="form-group"><label>Phone Number</label><input type="tel" name="Phone" required></div>
+                    <div class="form-group"><label>Shipping Address</label><textarea name="Address" rows="3" required></textarea></div>
+                    <input type="hidden" id="co-cart-data" name="Order Summary">
+                    <button type="submit" class="btn btn-solid" style="width: 100%;">COMPLETE ORDER</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-brand"><img src="FUNKAURA Logo.jpeg" alt="Logo"></div>
+        <div class="footer-bottom">&copy; 2026 FUNKAURA. All Rights Reserved.</div>
+    </footer>
+
+    <script>
+        const app = {
+            products: [],
+            currentCategory: 'All',
+            currentProduct: null,
+            cart: [],
+            isLoggedIn: false,
+
+            async init() {
+                await this.fetchLiveProducts();
+                this.renderProducts();
+                this.navigate('home');
+            },
+
+            async fetchLiveProducts() {
+                try {
+                    const repoUrl = 'https://api.github.com/repos/mohammedbharmal2006/funkaura-website/contents/products';
+                    const response = await fetch(repoUrl);
+                    if (!response.ok) return; 
+                    const files = await response.json();
+                    let liveProducts = [];
+                    let idCounter = 1;
+
+                    for (let file of files) {
+                        if (file.name.endsWith('.md')) {
+                            const fileData = await fetch(file.download_url);
+                            const text = await fileData.text();
+                            const titleMatch = text.match(/title:\s*["']?(.*?)["']?\r?\n/);
+                            const imageMatch = text.match(/image:\s*["']?(.*?)["']?\r?\n/);
+                            const priceMatch = text.match(/price:\s*["']?(.*?)["']?\r?\n/);
+                            const catMatch = text.match(/category:\s*["']?(.*?)["']?\r?\n/);
+                            const fontMatch = text.match(/font_style:\s*["']?(.*?)["']?\r?\n/);
+                            
+                            const bodyParts = text.split('---');
+                            let desc = "A premium custom doodle product by FUNKAURA.";
+                            if (bodyParts.length > 2) desc = bodyParts.slice(2).join('---').trim() || desc;
+
+                            let rawPrice = priceMatch ? priceMatch[1] : "599";
+                            let numericPrice = parseInt(rawPrice.replace(/[^0-9]/g, '')) || 599;
+
+                            liveProducts.push({
+                                id: idCounter++,
+                                name: titleMatch ? titleMatch[1] : 'FUNKAURA Item',
+                                category: catMatch ? catMatch[1] : 'Accessories',
+                                price: numericPrice,
+                                priceStr: rawPrice.includes('₹') ? rawPrice : `₹${rawPrice}`,
+                                fontStyle: fontMatch ? fontMatch[1] : 'Default',
+                                desc: desc,
+                                img: imageMatch ? imageMatch[1] : ''
+                            });
+                        }
+                    }
+                    if (liveProducts.length > 0) this.products = liveProducts;
+                } catch (error) { console.error("GitHub fetch error:", error); }
+            },
+
+            filterCategory(cat) {
+                this.currentCategory = cat;
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.innerText.toLowerCase() === cat.toLowerCase() || (cat === 'All' && btn.innerText === 'All'));
+                });
+                this.renderProducts();
+            },
+
+            renderProducts() {
+                const productsGrid = document.getElementById('products-page-grid');
+                if(!productsGrid) return;
+
+                let filtered = this.currentCategory === 'All' ? this.products : this.products.filter(p => p.category.toLowerCase() === this.currentCategory.toLowerCase());
+
+                productsGrid.innerHTML = filtered.map(p => `
+                    <div class="product-card" onclick="app.openProduct(${p.id})">
+                        <div class="product-img-container">
+                            <img src="${p.img}" alt="${p.name}">
+                        </div>
+                        <div class="product-info">
+                            <h3 style="${p.fontStyle === 'Bold Serif' ? 'font-family: Georgia, serif;' : p.fontStyle === 'Streetwear Graffiti' ? 'font-style: italic; letter-spacing: 2px;' : ''}">${p.name}</h3>
+                            <div class="product-price">${p.priceStr}</div>
+                            <button class="btn btn-solid" style="padding: 6px 15px; font-size: 0.75rem;" onclick="event.stopPropagation(); app.addToCart(${p.id})">ADD TO CART</button>
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            toggleCart() {
+                document.getElementById('cart-drawer').classList.toggle('open');
+                document.getElementById('cart-overlay').classList.toggle('open');
+            },
+
+            addToCart(id) {
+                const p = this.products.find(item => item.id === id);
+                if(p) { this.cart.push(p); this.updateCartUI(); this.toggleCart(); }
+            },
+
+            addToCartCurrent() {
+                if(this.currentProduct) { this.cart.push(this.currentProduct); this.updateCartUI(); this.toggleCart(); }
+            },
+
+            removeFromCart(idx) {
+                this.cart.splice(idx, 1);
+                this.updateCartUI();
+            },
+
+            updateCartUI() {
+                document.getElementById('cart-count').innerText = this.cart.length;
+                const container = document.getElementById('cart-items-container');
+                if(this.cart.length === 0) {
+                    container.innerHTML = `<p style="text-align: center; color: var(--medium-grey);">Your cart is empty.</p>`;
+                    document.getElementById('cart-total-price').innerText = "₹0";
+                    return;
+                }
+                let total = 0;
+                container.innerHTML = this.cart.map((item, i) => {
+                    total += item.price;
+                    return `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--off-white); padding:10px; border-radius:8px;">
+                        <div><h4>${item.name}</h4><p>${item.priceStr}</p></div>
+                        <button onclick="app.removeFromCart(${i})" style="color:red; background:none; border:none; cursor:pointer;">Remove</button>
+                    </div>`;
+                }).join('');
+                document.getElementById('cart-total-price').innerText = `₹${total}`;
+            },
+
+            proceedToCheckout() {
+                if(this.cart.length === 0) { alert("Cart is empty!"); return; }
+                this.toggleCart();
+                if(!this.isLoggedIn) {
+                    alert("Please log in or register first!");
+                    this.navigate('login');
+                } else {
+                    document.getElementById('co-cart-data').value = this.cart.map(i => `${i.name} (${i.priceStr})`).join(', ');
+                    this.navigate('checkout');
+                }
+            },
+
+            openProduct(id) {
+                const p = this.products.find(item => item.id === id);
+                if(!p) return;
+                this.currentProduct = p;
+                document.getElementById('detail-image').src = p.img;
+                document.getElementById('detail-title').innerText = p.name;
+                document.getElementById('detail-price').innerText = p.priceStr;
+                document.getElementById('detail-desc').innerText = p.desc;
+                this.navigate('product-detail');
+            },
+
+            buyNowWhatsApp() {
+                if(!this.currentProduct) return;
+                window.open(`https://wa.me/919978653371?text=${encodeURIComponent(`Hi FUNKAURA, buying ${this.currentProduct.name} for${this.currentProduct.priceStr}`)}`, '_blank');
+            },
+
+            submitCustomization(e) {
+                e.preventDefault();
+                const name = document.getElementById('c-name').value;
+                const phone = document.getElementById('c-whatsapp').value;
+                const prod = document.getElementById('c-product').value;
+                const desc = document.getElementById('c-desc').value;
+                window.open(`https://wa.me/919978653371?text=${encodeURIComponent(`*Customization Request*\nName: ${name}\nPhone:${phone}\nProduct: ${prod}\nDetails:${desc}`)}`, '_blank');
+            },
+
+            submitLogin(e) {
+                e.preventDefault();
+                this.isLoggedIn = true;
+                alert("Login successful!");
+                this.navigate('checkout');
+            },
+
+            submitRegister(e) {
+                e.preventDefault();
+                this.isLoggedIn = true;
+                alert("Account created!");
+                this.navigate('checkout');
+            },
+
+            submitOrder(e) {
+                alert("Order placed successfully!");
+                this.cart = [];
+                this.updateCartUI();
+                this.navigate('home');
+            },
+
+            navigate(id) {
+                document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+                document.getElementById('page-' + id).classList.add('active');
+                window.scrollTo(0, 0);
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
 </html>
