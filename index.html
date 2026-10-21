@@ -448,6 +448,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            min-height: 400px;
         }
         .detail-img img {
             width: 100%;
@@ -678,7 +679,7 @@
             height: 60px;
             bottom: 30px;
             right: 30px;
-            background-color: var(--primary-black);
+            background-color: #25d366;
             color: #FFF;
             border-radius: 50px;
             text-align: center;
@@ -693,7 +694,7 @@
         }
         .wa-float:hover {
             transform: scale(1.1);
-            background-color: var(--charcoal);
+            background-color: #1ebd56;
         }
         .wa-icon {
             width: 35px;
@@ -728,6 +729,8 @@
                 justify-content: center;
                 text-align: center;
                 padding-top: 100px;
+                height: auto;
+                padding-bottom: 50px;
             }
             .hero-content { padding-right: 0; margin-bottom: 40px; }
             .hero-buttons { justify-content: center; }
@@ -841,12 +844,11 @@
         <div id="page-products" class="page">
             <h2 class="section-title" style="margin-top: 40px;">ALL PRODUCTS</h2>
             
-            <!-- Category Sub-Filters -->
-            <div class="category-filter" id="category-filters" style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
-                <button class="filter-btn active" onclick="app.filterCategory('All')" style="padding: 8px 20px; border-radius: 20px; border: 1px solid var(--primary-black); background: var(--primary-black); color: #fff; cursor: pointer; font-weight: 600;">All</button>
-                <button class="filter-btn" onclick="app.filterCategory('Caps')" style="padding: 8px 20px; border-radius: 20px; border: 1px solid var(--primary-black); background: transparent; cursor: pointer; font-weight: 600;">Caps</button>
-                <button class="filter-btn" onclick="app.filterCategory('T-Shirts')" style="padding: 8px 20px; border-radius: 20px; border: 1px solid var(--primary-black); background: transparent; cursor: pointer; font-weight: 600;">T-Shirts</button>
-                <button class="filter-btn" onclick="app.filterCategory('Bags')" style="padding: 8px 20px; border-radius: 20px; border: 1px solid var(--primary-black); background: transparent; cursor: pointer; font-weight: 600;">Bags</button>
+            <div class="category-filter" id="category-filters">
+                <button class="filter-btn active" onclick="app.filterCategory('All')">All</button>
+                <button class="filter-btn" onclick="app.filterCategory('Caps')">Caps</button>
+                <button class="filter-btn" onclick="app.filterCategory('T-Shirts')">T-Shirts</button>
+                <button class="filter-btn" onclick="app.filterCategory('Bags')">Bags</button>
             </div>
 
             <div class="products-grid" id="products-page-grid">
@@ -933,7 +935,7 @@
 
                 <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
                     <a href="https://instagram.com/funka.ura" target="_blank" class="btn btn-dark-text" style="width: 250px;">INSTAGRAM (@funka.ura)</a>
-                    <a href="https://wa.me/919978653371?text=Hi%20FUNKAURA,%20I%20want%20to%20know%20more%20about%20your%20products." target="_blank" class="btn btn-solid" style="width: 250px;">WHATSAPP</a>
+                    <a href="https://wa.me/919978653371?text=Hi%20FUNKAURA,%20I%20want%20to%20know%20more%20about%20your%20products." target="_blank" class="btn btn-solid" style="width: 250px; background: #25d366; border-color: #25d366;">WHATSAPP</a>
                     <a href="mailto:funkaura.business@gmail.com" class="btn btn-dark-text" style="width: 250px;">EMAIL US</a>
                 </div>
             </section>
@@ -1075,13 +1077,13 @@
         </svg>
     </a>
 
-    <!-- JAVASCRIPT APP LOGIC WITH CART, CATEGORIES, & CHECKOUT -->
+    <!-- JAVASCRIPT APP LOGIC -->
     <script>
         const app = {
             products: [
-                { id: 1, name: "Custom Doodle T-Shirt", category: "T-Shirts", price: 599, priceStr: "₹599", desc: "A premium cotton t-shirt transformed into a wearable masterpiece.", img: "FUNKAURA Yellow Tshirt.jpeg" },
-                { id: 2, name: "Custom Doodle Cap", category: "Caps", price: 399, priceStr: "₹399", desc: "Top off your outfit with our classic structured cap.", img: "FUNKAURA Cap.jpg" },
-                { id: 3, name: "Custom Doodle Bag", category: "Bags", price: 799, priceStr: "₹799", desc: "Carry your essentials in a bag that isn't ordinary.", img: "FUNKAURA Spider Man.jpeg" }
+                { id: 1, name: "Custom Doodle T-Shirt", category: "T-Shirts", price: 599, priceStr: "₹599", desc: "A premium cotton t-shirt transformed into a wearable masterpiece with bold hand-styled doodle artwork.", img: "FUNKAURA Yellow Tshirt.jpeg" },
+                { id: 2, name: "Custom Doodle Cap", category: "Caps", price: 399, priceStr: "₹399", desc: "Top off your streetwear outfit with our classic structured cap featuring custom doodle elements.", img: "FUNKAURA Cap.jpg" },
+                { id: 3, name: "Custom Doodle Bag", category: "Bags", price: 799, priceStr: "₹799", desc: "Carry your daily essentials in a canvas bag that breaks away from ordinary fashion.", img: "FUNKAURA Spider Man.jpeg" }
             ],
             currentCategory: 'All',
             currentProduct: null,
@@ -1114,7 +1116,6 @@
                             const imageMatch = text.match(/image:\s*["']?(.*?)["']?\r?\n/);
                             const priceMatch = text.match(/price:\s*["']?(.*?)["']?\r?\n/);
                             const catMatch = text.match(/category:\s*["']?(.*?)["']?\r?\n/);
-                            const fontMatch = text.match(/font_style:\s*["']?(.*?)["']?\r?\n/);
 
                             const bodyParts = text.split('---');
                             let desc = "A premium custom doodle product by FUNKAURA.";
@@ -1131,7 +1132,6 @@
                                 category: catMatch ? catMatch[1] : 'Accessories',
                                 price: numericPrice,
                                 priceStr: rawPrice.includes('₹') ? rawPrice : `₹${rawPrice}`,
-                                fontStyle: fontMatch ? fontMatch[1] : 'Default',
                                 desc: desc,
                                 img: imageMatch ? imageMatch[1] : ''
                             });
@@ -1148,8 +1148,9 @@
             filterCategory(cat) {
                 this.currentCategory = cat;
                 document.querySelectorAll('.filter-btn').forEach(btn => {
-                    btn.style.background = (btn.innerText.toLowerCase() === cat.toLowerCase()) ? 'var(--primary-black)' : 'transparent';
-                    btn.style.color = (btn.innerText.toLowerCase() === cat.toLowerCase()) ? '#fff' : 'var(--primary-black)';
+                    const match = btn.innerText.toLowerCase() === cat.toLowerCase();
+                    btn.style.background = match ? 'var(--primary-black)' : 'transparent';
+                    btn.style.color = match ? '#fff' : 'var(--primary-black)';
                 });
                 this.renderProducts();
             },
@@ -1166,7 +1167,7 @@
                             <img src="${p.img}" alt="${p.name}">
                         </div>
                         <div class="product-info">
-                            <h3 style="${p.fontStyle === 'Bold Serif' ? 'font-family: Georgia, serif;' : p.fontStyle === 'Streetwear Graffiti' ? 'font-style: italic; letter-spacing: 2px;' : ''}">${p.name}</h3>
+                            <h3>${p.name}</h3>
                             <div class="product-price">${p.priceStr}</div>
                             <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
                                 <button class="btn" style="padding: 6px 12px; font-size: 0.75rem;" onclick="event.stopPropagation(); app.openProduct(${p.id})">VIEW</button>
@@ -1236,13 +1237,11 @@
                 this.toggleCart();
                 
                 if(!this.isLoggedIn) {
-                    alert("Please log in or register first to place an order online!");
-                    this.navigate('login');
-                } else {
-                    const summary = this.cart.map(i => `${i.name} (${i.priceStr})`).join(', ');
-                    document.getElementById('co-cart-data').value = summary;
-                    this.navigate('checkout');
+                    this.isLoggedIn = true; // Auto guest session for seamless UX
                 }
+                const summary = this.cart.map(i => `${i.name} (${i.priceStr})`).join(', ');
+                document.getElementById('co-cart-data').value = summary;
+                this.navigate('checkout');
             },
 
             navigate(pageId) {
@@ -1289,7 +1288,7 @@
                 e.preventDefault();
                 this.isLoggedIn = true;
                 this.currentUser = document.getElementById('l-email').value;
-                alert("Login successful! You can now complete your order.");
+                alert("Login successful!");
                 this.navigate('checkout');
             },
 
@@ -1308,7 +1307,7 @@
             },
 
             submitOrder(e) {
-                alert("Order placed successfully! We have sent a confirmation email to the store.");
+                alert("Order placed successfully! We have received your order details.");
                 this.cart = [];
                 this.updateCartUI();
                 this.navigate('home');
