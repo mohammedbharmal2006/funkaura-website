@@ -1221,11 +1221,21 @@
                             const priceMatch = text.match(/price:\s*["']?(.*?)["']?\r?\n/);
                             const catMatch = text.match(/category:\s*["']?(.*?)["']?\r?\n/);
 
-                            // Extract multi-images if defined in Netlify CMS frontmatter (e.g., gallery or images list)
+                            // Robustly parse Netlify CMS list format (- image.jpg)
                             let galleryImages = [];
-                            const imagesLineMatch = text.match(/images:\s*\[(.*?)\]/);
-                            if (imagesLineMatch && imagesLineMatch[1]) {
-                                galleryImages = imagesLineMatch[1].split(',').map(img => img.trim().replace(/['"]/g, ''));
+                            const imagesSectionMatch = text.match(/images:\s*\r?\n((?:\s*-\s*["']?.*?["']?\r?\n)+)/);
+                            if (imagesSectionMatch && imagesSectionMatch[1]) {
+                                const lines = imagesSectionMatch[1].split(/\r?\n/);
+                                for (let line of lines) {
+                                    let cleanLine = line.replace(/^\s*-\s*/, '').trim().replace(/['"]/g, '');
+                                    if (cleanLine) galleryImages.push(cleanLine);
+                                }
+                            } else {
+                                // Fallback for inline array format if any
+                                const imagesLineMatch = text.match(/images:\s*\[(.*?)\]/);
+                                if (imagesLineMatch && imagesLineMatch[1]) {
+                                    galleryImages = imagesLineMatch[1].split(',').map(img => img.trim().replace(/['"]/g, ''));
+                                }
                             }
 
                             const bodyParts = text.split('---');
