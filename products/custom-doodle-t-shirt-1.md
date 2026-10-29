@@ -7,6 +7,10 @@ gallery:
   - /images/funkaura-grey-tshirt.jpeg
   - /images/funkaura-grey-tshirt-man-front.jpeg
   - /images/funkaura-grey-tshirt-man-back.jpeg
+images:
+  - /images/funkaura-grey-tshirt-man-front.jpeg
+  - /images/funkaura-grey-tshirt-man-back.jpeg
+  - /images/funkaura-grey-tshirt.jpeg
 font_style: Default
 ---
 
